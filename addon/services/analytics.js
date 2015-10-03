@@ -10,12 +10,13 @@ export default Ember.Service.extend({
 
 		this._super();
 
-        this.setupExceptionHandling();
-
         // AUTO TRACKER SETUP
 		var config = this.container.lookupFactory('config:environment');
+        this.set('environment', config.environment);
+
         if ( config.GOOGLE_ANALYTICS ) {
             if ( config.GOOGLE_ANALYTICS.tracking_id ) {
+                this.setupExceptionHandling();
                 this.create(config.GOOGLE_ANALYTICS.tracking_id);
             }
             if ( config.GOOGLE_ANALYTICS.ecommerce ) {
@@ -39,19 +40,29 @@ export default Ember.Service.extend({
 
     setupExceptionHandling() {
 
-        var self = this;
+        if ( this.get('environment') !== 'development' ) {
 
-        window.addEventListener('error', function(event) {
-            self.exception( { message: event.message, details: String(event.error.stack) } );
-        });
+            var self = this;
 
-        Ember.onerror = function(error) {
-            self.exception(error);
-        };
+            window.addEventListener('error', function(event) {
+                console.error(event);
+                self.exception( { message: event.message, details: String(event.error.stack) } );
+            });
 
-        Ember.RSVP.on('error', function(error) {
-            self.exception(error);
-        });
+            Ember.onerror = function(error) {
+                console.error(error.stack);
+                self.exception(error);
+            };
+
+            Ember.RSVP.on('error', function(reason, label) {
+                if ( label ) {
+                    console.error(label);
+                }
+                console.assert(false, reason);
+                self.exception(reason);
+            });
+
+        }
 
     },
 
