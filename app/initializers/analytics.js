@@ -1,6 +1,6 @@
 import AnalyticsService from '../services/analytics';
 
-export function initialize (container, app) {
+export function initialize (app) {
 
 	app.register('service:analytics', AnalyticsService);
 

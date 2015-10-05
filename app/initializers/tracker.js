@@ -1,6 +1,6 @@
 import TrackerService from '../services/tracker';
 
-export function initialize (container, app) {
+export function initialize (app) {
 
 	app.register('service:tracker', TrackerService);
 

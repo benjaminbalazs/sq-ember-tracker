@@ -7,6 +7,7 @@ export default Ember.Service.extend({
         this._super();
 
         var config = this.container.lookupFactory('config:environment');
+        
         if ( config.FACEBOOK ) {
             if ( config.FACEBOOK.pixel_id ) {
                 if ( this.exist() ) {

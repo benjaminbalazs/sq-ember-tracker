@@ -1,6 +1,6 @@
 import FacebookService from '../services/facebook';
 
-export function initialize (container, app) {
+export function initialize (app) {
 
 	app.register('service:facebook', FacebookService);
 

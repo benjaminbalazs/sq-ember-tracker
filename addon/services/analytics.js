@@ -15,20 +15,23 @@ export default Ember.Service.extend({
         this.set('environment', config.environment);
 
         if ( config.GOOGLE_ANALYTICS ) {
+
             if ( config.GOOGLE_ANALYTICS.tracking_id ) {
+
                 this.setupExceptionHandling();
                 this.create(config.GOOGLE_ANALYTICS.tracking_id);
-            }
-            if ( config.GOOGLE_ANALYTICS.ecommerce ) {
-                if ( this.exist() ) {
-                    window.ga('require', 'ec');
-                    window.ga('set', '&cu', 'USD');
-                }
-            }
-        }
+                this.get('user').on('init', this, this.didUserLoad);
 
-        // LISTEN TO USER TO BE LOADED
-        this.get('user').on('init', this, this.didUserLoad);
+                if ( config.GOOGLE_ANALYTICS.ecommerce ) {
+                    if ( this.exist() ) {
+                        window.ga('require', 'ec');
+                        window.ga('set', '&cu', 'USD');
+                    }
+                }
+
+            }
+            
+        }
 
 	},
 

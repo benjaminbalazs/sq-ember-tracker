@@ -14,12 +14,16 @@ module.exports = {
 
             var result = [];
 
-            if ( config.GOOGLE_ANALYTICS.tracking_id ) {
-                result.push(analytics);
+            if ( config.GOOGLE_ANALYTICS ) {
+                if ( config.GOOGLE_ANALYTICS.tracking_id ) {
+                    result.push(analytics);
+                }
             }
 
-            if ( config.FACEBOOK.pixel_id ) {
-                result.push(facebook);
+            if ( config.FACEBOOK ) {
+                if ( config.FACEBOOK.pixel_id ) {
+                    result.push(facebook);
+                }
             }
 
             if ( result.length !== 0 ) {
