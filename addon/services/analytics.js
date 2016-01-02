@@ -6,6 +6,34 @@ export default Ember.Service.extend({
 
     //
 
+    saveUtmTags(params) {
+
+        if ( this.get('utm_campaign') ) return;
+
+        if ( params.utm_source ) {
+            this.set('utm_source', params.utm_source);
+        }
+
+        if ( params.utm_medium ) {
+            this.set('utm_medium', params.utm_medium);
+        }
+
+        if ( params.utm_term ) {
+            this.set('utm_term', params.utm_term);
+        }
+
+        if ( params.utm_source ) {
+            this.set('utm_content', params.utm_content);
+        }
+
+        if ( params.utm_source ) {
+            this.set('utm_campaign', params.utm_campaign);
+        }
+
+    },
+
+    //
+
 	init() {
 
 		this._super();
@@ -30,8 +58,14 @@ export default Ember.Service.extend({
                 }
 
             }
-            
+
         }
+
+        //
+        //var router = this.container.lookupFactory('router:main');
+        //router.on('init', this, function() {
+        //    console.log('init');
+        //});
 
 	},
 
@@ -44,7 +78,7 @@ export default Ember.Service.extend({
     setupExceptionHandling() {
 
         if ( this.get('environment') !== 'development' ) {
-
+            /*
             var self = this;
 
             window.addEventListener('error', function(event) {
@@ -64,7 +98,7 @@ export default Ember.Service.extend({
                 console.assert(false, reason);
                 self.exception(reason);
             });
-
+            */
         }
 
     },
