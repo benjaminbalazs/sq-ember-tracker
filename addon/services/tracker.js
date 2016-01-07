@@ -9,6 +9,17 @@ export default Ember.Service.extend({
 
     init() {
 
+        var config = this.container.lookupFactory('config:environment');
+        this.set('environment', config.environment);
+
+        if ( config.TRACKER ) {
+            if ( config.TRACKER.baseURL ) {
+                this.set('baseURL', config.TRACKER.baseURL);
+            }
+        }
+
+        //
+
         this.router.on('didTransition', this, function() {
             this.pageview();
         });
@@ -17,61 +28,86 @@ export default Ember.Service.extend({
 
     // STEPS -------------------------------------------------------------------
 
-    registration(data) {
+    signup() {
 
-        this.get('analytics').event({ category: 'Sign up', action: 'Complete' });
-        this.get('facebook').completeRegistration(data);
-
-    },
-
-    //
-
-    checkout() {
-
-        this.get('analytics').checkout(1);
-        this.get('facebook').initiateCheckout();
-
-    },
-
-    payment() {
-
-        this.get('analytics').checkout(2);
-        this.get('facebook').addPaymentInfo();
+        this.get('analytics').event('Sign Up', 'Basic Information');
+        this.get('facebook').completeRegistration();
 
     },
 
     // PURCHASE ----------------------------------------------------------------
 
-    purchase(transaction) {
+    purchase(plan, period, transaction) {
 
-        var data = {
-            'id': transaction.get('id'),
-            'revenue': transaction.get('value')
-        };
+        this.get('analytics').purchase({
+            id: plan.get('id'),
+            name: plan.get('identifier'),
+            category: plan.get('category'),
+            variant: period,
+            revenue: transaction.get('value')/100,
+        });
 
-        this.get('analytics').purchase(data);
-        this.get('facebook').purchase(data);
+        this.get('facebook').purchase({
+            content_type: plan.get('category'),
+            content_name: plan.get('identifier'),
+            period: period,
+            value: transaction.get('value')/100,
+            order_id: transaction.get('id'),
+            currency: 'USD'
+        });
+
+    },
+
+    added(plan, period) {
+
+        this.get('analytics').addProduct({
+            id: plan.get('id'),
+            name: plan.get('identifier'),
+            category: plan.get('category'),
+            variant: period,
+        });
+
+        this.get('facebook').addToCart({
+            content_type: plan.get('category'),
+            content_name: plan.get('identifier'),
+            period: period,
+        });
 
     },
 
-    added(plan) {
+    view(plan) {
 
-        var data = {
-            'id': plan.get('id'),
-            'name': plan.get('identifier'),
-            'category': plan.get('market.identifier')
-        };
+        this.get('analytics').addImpression({
+            id: plan.get('id'),
+            name: plan.get('identifier'),
+            category: plan.get('category'),
+        });
 
-        this.get('analytics').addProduct(data);
-        this.get('facebook').addToCart(data);
+        this.get('facebook').viewContent({
+            content_type: plan.get('category'),
+            content_name: plan.get('identifier'),
+        });
 
     },
+
 
     // GENERAL -----------------------------------------------------------------
 
     pageview() {
-        this.get('analytics').pageview();
-        this.get('facebook').pageview();
+
+        var page = this.router.currentRouteName.split('.').join('/');
+        if ( this.get('baseURL') ) {
+            page = this.get('baseURL') + page;
+        } else {
+            page =  '/' + page;
+        }
+
+        //
+        this.get('analytics').pageview(page);
+
+        //
+        this.get('facebook').pageview({ location: page });
+
     },
 
     event(category, action, label, value) {

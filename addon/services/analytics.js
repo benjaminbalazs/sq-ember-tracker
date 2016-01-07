@@ -38,15 +38,17 @@ export default Ember.Service.extend({
 
 		this._super();
 
-        // AUTO TRACKER SETUP
 		var config = this.container.lookupFactory('config:environment');
         this.set('environment', config.environment);
 
         if ( config.GOOGLE_ANALYTICS ) {
 
+            if ( config.GOOGLE_ANALYTICS.debug === true ) {
+                this.set('debug', true);
+            }
+
             if ( config.GOOGLE_ANALYTICS.tracking_id ) {
 
-                this.setupExceptionHandling();
                 this.create(config.GOOGLE_ANALYTICS.tracking_id);
                 this.get('user').on('init', this, this.didUserLoad);
 
@@ -61,50 +63,16 @@ export default Ember.Service.extend({
 
         }
 
-        //
-        //var router = this.container.lookupFactory('router:main');
-        //router.on('init', this, function() {
-        //    console.log('init');
-        //});
-
 	},
 
     exist() {
         return ( window.ga );
     },
 
-    // EXCEPTION HANDLING --------------------------------------------------------
-
-    setupExceptionHandling() {
-
-        if ( this.get('environment') !== 'development' ) {
-            /*
-            var self = this;
-
-            window.addEventListener('error', function(event) {
-                console.error(event);
-                self.exception( { message: event.message, details: String(event.error.stack) } );
-            });
-
-            Ember.onerror = function(error) {
-                console.error(error.stack);
-                self.exception(error);
-            };
-
-            Ember.RSVP.on('error', function(reason, label) {
-                if ( label ) {
-                    console.error(label);
-                }
-                console.assert(false, reason);
-                self.exception(reason);
-            });
-            */
+    debugger(action, data) {
+        if ( this.get('debug') ) {
+            console.log('analytics:', action, data);
         }
-
-    },
-
-    exception(data) {
-        window.ga('send', 'exception', data);
     },
 
     // AUTO USER ID ------------------------------------------------------------
@@ -113,6 +81,7 @@ export default Ember.Service.extend({
         if ( this.exist() ) {
             var id = this.get('user.model.id');
             window.ga('set', '&uid', id);
+            this.debugger('set: &uid', id);
         }
     },
 
@@ -125,21 +94,25 @@ export default Ember.Service.extend({
             if ( name ) {
                 window.ga('create', tracking_id, name);
                 this.trackers.push(name);
+                this.debugger('create', { tracking_id: tracking_id, option: name});
             } else {
                 window.ga('create', tracking_id, 'auto');
+                this.debugger('create', { tracking_id: tracking_id, name: 'auto'});
             }
         }
     },
 
-    pageview() {
+    pageview(data) {
         if ( this.exist() ) {
-            window.ga('send', 'pageview');
+            window.ga('send', 'pageview', data);
+            this.debugger('send:pageview', data);
         }
     },
 
     event(category, action, label, value) {
         if ( this.exist() ) {
             window.ga('send', 'event', category, action, label, value);
+            this.debugger('send:event', { category: category, action: action });
         }
     },
 
@@ -148,28 +121,32 @@ export default Ember.Service.extend({
     addImpression(data) {
         if ( this.exist() ) {
             window.ga('ec:addImpression', data);
+            this.debugger('ec:addImpression', data);
         }
     },
 
     addProduct(data) {
         if ( this.exist() ) {
             window.ga('ec:addProduct', data);
+            this.debugger('ec:addProduct', data);
         }
     },
 
     purchase(data) {
         if ( this.exist() ) {
             window.ga('ec:setAction', 'purchase', data);
+            this.debugger('ec:setAction: purchase', data);
         }
     },
-
+    /*
     checkout(step, option) {
         if ( this.exist() ) {
             window.ga('ec:setAction','checkout', {
                 'step': step,
                 'option': option
             });
+            this.debugger('ec:setAction: checkout', data);
         }
     }
-
+    */
 });
