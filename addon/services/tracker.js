@@ -4,6 +4,7 @@ export default Ember.Service.extend({
 
     analytics: Ember.inject.service(),
     facebook: Ember.inject.service(),
+    intercom: Ember.inject.service(),
 
     // ROUTER LISTENER ---------------------------------------------------------
 
@@ -56,6 +57,18 @@ export default Ember.Service.extend({
             currency: 'USD'
         });
 
+        //
+
+        this.get('intercom').event('checkout_purchase',{
+            plan_id: plan.get('id'),
+            plan_name: plan.get('identifier'),
+            plan_category: plan.get('category'),
+            period: period,
+            transaction_value: transaction.get('value')/100,
+            transaction_id: transaction.get('id'),
+            transaction_payment_type : transaction.get('payment_type')
+        });
+
     },
 
     added(plan, period) {
@@ -73,6 +86,15 @@ export default Ember.Service.extend({
             period: period,
         });
 
+        //
+
+        this.get('intercom').event('checkout_added',{
+            plan_id: plan.get('id'),
+            plan_name: plan.get('identifier'),
+            plan_category: plan.get('category'),
+            period: period,
+        });
+
     },
 
     view(plan) {
@@ -86,6 +108,14 @@ export default Ember.Service.extend({
         this.get('facebook').viewContent({
             content_type: plan.get('category'),
             content_name: plan.get('identifier'),
+        });
+
+        //
+
+        this.get('intercom').event('checkout_view',{
+            plan_id: plan.get('id'),
+            plan_name: plan.get('identifier'),
+            plan_category: plan.get('category'),
         });
 
     },
@@ -112,13 +142,18 @@ export default Ember.Service.extend({
 
     event(category, action, label, value) {
 
+        //
         this.get('analytics').event(category, action, label, value);
 
+        //
         var data = {};
         if ( action ) { data.action = action; }
         if ( label ) { data.label = label; }
         if ( value ) { data.value = value; }
         this.get('facebook').event(category, data);
+
+        //
+        this.get('intercom').event(category.toLowerCase() + '_' + action.toLowerCase(), data);
 
     },
 

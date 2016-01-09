@@ -138,15 +138,5 @@ export default Ember.Service.extend({
             this.debugger('ec:setAction: purchase', data);
         }
     },
-    /*
-    checkout(step, option) {
-        if ( this.exist() ) {
-            window.ga('ec:setAction','checkout', {
-                'step': step,
-                'option': option
-            });
-            this.debugger('ec:setAction: checkout', data);
-        }
-    }
-    */
+
 });
