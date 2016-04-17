@@ -38,7 +38,7 @@ export default Ember.Service.extend({
 
 		this._super();
 
-		var config = this.container.lookupFactory('config:environment');
+		var config = Ember.getOwner(this)._lookupFactory('config:environment');
         this.set('environment', config.environment);
 
         if ( config.GOOGLE_ANALYTICS ) {
