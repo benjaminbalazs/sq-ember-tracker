@@ -106,8 +106,14 @@ export default Ember.Service.extend({
     pageview(data, tracker, fields) {
         if ( this.exist() ) {
             if ( tracker ) {
-                window.ga(tracker+'.send', 'pageview', data, fields);
-                this.debugger(tracker+'.send:pageview', data);
+                var list = tracker;
+                if ( !Ember.isArray(tracker) ) {
+                    list = [tracker];
+                }
+                for (var i = 0; i < list.length; i++) {
+                    window.ga(list[i]+'.send', 'pageview', data, fields);
+                    this.debugger(list[i]+'.send:pageview', data);
+                }
             } else {
                 window.ga('send', 'pageview', data, fields);
                 this.debugger('send:pageview', data);
