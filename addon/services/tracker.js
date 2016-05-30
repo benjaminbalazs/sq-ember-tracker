@@ -126,18 +126,31 @@ export default Ember.Service.extend({
     pageview() {
 
         var page = this.router.currentRouteName.split('.').join('/');
-        if ( this.get('baseURL') ) {
-            page = this.get('baseURL') + page;
-        } else {
-            page =  '/' + page;
+        page = this.getPageUrl(page);
+
+        if ( page !== null ) {
+            this.get('analytics').pageview(page,this.getTrackerName(page), this.getPageFields());
+            this.get('facebook').pageview({ location: page });
         }
 
-        //
-        this.get('analytics').pageview(page);
+    },
 
-        //
-        this.get('facebook').pageview({ location: page });
+    getTrackerName(page) {
+        return null;
+    },
 
+    getPageUrl(page) {
+
+        if ( this.get('baseURL') ) {
+            return this.get('baseURL') + page;
+        } else {
+            return '/' + page;
+        }
+
+    },
+
+    getPageFields() {
+        return null;
     },
 
     event(category, action, label, value) {

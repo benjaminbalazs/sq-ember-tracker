@@ -3,6 +3,7 @@ import Ember from 'ember';
 export default Ember.Service.extend({
 
     user: Ember.inject.service(),
+    serviceName: 'user',
 
     //
 
@@ -50,7 +51,7 @@ export default Ember.Service.extend({
             if ( config.GOOGLE_ANALYTICS.tracking_id ) {
 
                 this.create(config.GOOGLE_ANALYTICS.tracking_id);
-                this.get('user').on('init', this, this.didUserLoad);
+                this.get(this.get("serviceName")).on('init', this, this.didUserLoad);
 
                 if ( config.GOOGLE_ANALYTICS.ecommerce ) {
                     if ( this.exist() ) {
@@ -79,7 +80,7 @@ export default Ember.Service.extend({
 
     didUserLoad() {
         if ( this.exist() ) {
-            var id = this.get('user.model.id');
+            var id = this.get(this.get("serviceName")+'.model.id');
             window.ga('set', '&uid', id);
             this.debugger('set: &uid', id);
         }
@@ -92,9 +93,9 @@ export default Ember.Service.extend({
     create(tracking_id, name) {
         if ( this.exist() ) {
             if ( name ) {
-                window.ga('create', tracking_id, name);
+                window.ga('create', tracking_id, 'auto', name);
                 this.trackers.push(name);
-                this.debugger('create', { tracking_id: tracking_id, option: name});
+                this.debugger('create', { tracking_id: tracking_id, name: name});
             } else {
                 window.ga('create', tracking_id, 'auto');
                 this.debugger('create', { tracking_id: tracking_id, name: 'auto'});
@@ -102,10 +103,15 @@ export default Ember.Service.extend({
         }
     },
 
-    pageview(data) {
+    pageview(data, tracker, fields) {
         if ( this.exist() ) {
-            window.ga('send', 'pageview', data);
-            this.debugger('send:pageview', data);
+            if ( tracker ) {
+                window.ga(tracker+'.send', 'pageview', data, fields);
+                this.debugger(tracker+'.send:pageview', data);
+            } else {
+                window.ga('send', 'pageview', data, fields);
+                this.debugger('send:pageview', data);
+            }
         }
     },
 
