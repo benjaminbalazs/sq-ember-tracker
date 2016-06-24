@@ -125,7 +125,7 @@ export default Ember.Service.extend({
 
     pageview() {
 
-        var page = this.router.currentRouteName.split('.').join('/');
+        var page = this.getRouteName();
         page = this.getPageUrl(page);
 
         if ( page !== null ) {
@@ -133,6 +133,10 @@ export default Ember.Service.extend({
             this.get('facebook').pageview({ location: page });
         }
 
+    },
+
+    getRouteName() {
+        return this.router.currentRouteName.split('.').join('/');
     },
 
     getTrackerName(page) {

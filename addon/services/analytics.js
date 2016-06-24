@@ -9,8 +9,6 @@ export default Ember.Service.extend({
 
     saveUtmTags(params) {
 
-        if ( this.get('utm_campaign') ) return;
-
         if ( params.utm_source ) {
             this.set('utm_source', params.utm_source);
         }
@@ -38,6 +36,7 @@ export default Ember.Service.extend({
 	init() {
 
 		this._super();
+        var self = this;
 
 		var config = Ember.getOwner(this)._lookupFactory('config:environment');
         this.set('environment', config.environment);
@@ -51,7 +50,10 @@ export default Ember.Service.extend({
             if ( config.GOOGLE_ANALYTICS.tracking_id ) {
 
                 this.create(config.GOOGLE_ANALYTICS.tracking_id);
-                this.get(this.get("serviceName")).on('init', this, this.didUserLoad);
+                this.get(this.get("serviceName")).on('init', this, function() {
+                    self.didUserLoad();
+                    self.storageObserver();
+                });
 
                 if ( config.GOOGLE_ANALYTICS.ecommerce ) {
                     if ( this.exist() ) {
@@ -79,16 +81,40 @@ export default Ember.Service.extend({
     // AUTO USER ID ------------------------------------------------------------
 
     didUserLoad() {
+
         if ( this.exist() ) {
-            var id = this.get(this.get("serviceName")+'.model.id');
-            window.ga('set', '&uid', id);
-            this.debugger('set: &uid', id);
+
+            var model =  this.get(this.get("serviceName")+'.model');
+
+            if ( model.get('id') ) {
+                this.customSet('uid', model.get('id'));
+            }
+
         }
     },
+
+    storageObserver: Ember.observer('user.storage.countrycode_identifier', 'user.storage.language_identifier', function() {
+
+        if ( this.get('user.storage.countrycode_identifier') ) {
+            this.customSet('countrycode_identifier', this.get('user.storage.countrycode_identifier'));
+        }
+
+        if ( this.get('user.storage.language_identifier') ) {
+            this.customSet('countrycode_identifier', this.get('user.storage.language_identifier'));
+        }
+
+    }),
 
     // STANDARD ----------------------------------------------------------------
 
     trackers: [],
+
+    customSet(name, value) {
+        if ( this.exist() ) {
+            window.ga('set', '&' + name, value);
+            this.debugger('set:' + name, value);
+        }
+    },
 
     create(tracking_id, name) {
         if ( this.exist() ) {
