@@ -100,7 +100,7 @@ export default Ember.Service.extend({
         }
 
         if ( this.get('user.storage.language_identifier') ) {
-            this.customSet('countrycode_identifier', this.get('user.storage.language_identifier'));
+            this.customSet('language_identifier', this.get('user.storage.language_identifier'));
         }
 
     }),
