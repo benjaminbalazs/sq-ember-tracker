@@ -120,6 +120,11 @@ export default Ember.Service.extend({
 
     },
 
+    //
+
+    trackFacebookPageView(object) {
+        this.get('facebook').pageview(object);
+    },
 
     // GENERAL -----------------------------------------------------------------
 
@@ -130,7 +135,7 @@ export default Ember.Service.extend({
 
         if ( page !== null ) {
             this.get('analytics').pageview(page,this.getTrackerName(page), this.getPageFields());
-            this.get('facebook').pageview({ location: page });
+            this.trackFacebookPageView({ location: page });
         }
 
     },
