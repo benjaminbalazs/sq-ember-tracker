@@ -136,6 +136,7 @@ export default Ember.Service.extend({
         if ( page !== null ) {
             this.get('analytics').pageview(page,this.getTrackerName(page), this.getPageFields());
             this.trackFacebookPageView({ location: page });
+            this.get('intercom').pageview();
         }
 
     },
