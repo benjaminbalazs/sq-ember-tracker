@@ -9,24 +9,29 @@ export default Ember.Service.extend({
 
     saveUtmTags(params) {
 
-        if ( params.utm_source ) {
-            this.set('utm_source', params.utm_source);
+        if ( params.utm_content ) {
+            this.set('utm_content', params.utm_content);
+            this.set('user.storage.utm_content', params.utm_content);
         }
 
         if ( params.utm_medium ) {
             this.set('utm_medium', params.utm_medium);
+            this.set('user.storage.utm_medium', params.utm_medium);
         }
 
         if ( params.utm_term ) {
             this.set('utm_term', params.utm_term);
+            this.set('user.storage.utm_term', params.utm_term);
         }
 
         if ( params.utm_source ) {
-            this.set('utm_content', params.utm_content);
+            this.set('utm_source', params.utm_source);
+            this.set('user.storage.utm_source', params.utm_source);
         }
 
-        if ( params.utm_source ) {
+        if ( params.utm_campaign ) {
             this.set('utm_campaign', params.utm_campaign);
+            this.set('user.storage.utm_campaign', params.utm_campaign);
         }
 
     },
@@ -40,6 +45,30 @@ export default Ember.Service.extend({
 
 		var config = Ember.getOwner(this)._lookupFactory('config:environment');
         this.set('environment', config.environment);
+
+        //
+
+        if ( this.get('user.storage.utm_content') ) {
+            this.set('utm_content', this.get('user.storage.utm_content'));
+        }
+
+        if ( this.get('user.storage.utm_medium') ) {
+            this.set('utm_medium', this.get('user.storage.utm_medium'));
+        }
+
+        if ( this.get('user.storage.utm_term') ) {
+            this.set('utm_term', this.get('user.storage.utm_term'));
+        }
+
+        if ( this.get('user.storage.utm_source') ) {
+            this.set('utm_source', this.get('user.storage.utm_source'));
+        }
+
+        if ( this.get('user.storage.utm_campaign') ) {
+            this.set('utm_campaign', this.get('user.storage.utm_campaign'));
+        }
+
+        //
 
         if ( config.GOOGLE_ANALYTICS ) {
 
