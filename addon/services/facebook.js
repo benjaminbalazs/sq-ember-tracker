@@ -8,21 +8,34 @@ export default Ember.Service.extend({
 
         var config = Ember.getOwner(this)._lookupFactory('config:environment');
 
-        if ( config.FACEBOOK ) {
+        if ( this.shouldinit() ) {
 
-            if ( config.FACEBOOK.pixel_id ) {
-                if ( this.exist() ) {
-                    window.fbq('init', config.FACEBOOK.pixel_id);
+            if ( config.FACEBOOK ) {
+
+                if ( config.FACEBOOK.debug === true ) {
+                    this.set('debug', true);
                 }
-            }
 
-            if ( config.FACEBOOK.debug === true ) {
-                this.set('debug', true);
+                if ( config.FACEBOOK.pixel_id ) {
+                    if ( this.exist() ) {
+                        window.fbq('init', config.FACEBOOK.pixel_id);
+                        this.debugger('init', config.FACEBOOK.pixel_id);
+                    }
+                }
+
             }
 
         }
 
     },
+
+    //
+
+    shouldinit() {
+        return true;
+    },
+
+    //
 
     exist() {
         return ( window.fbq );
