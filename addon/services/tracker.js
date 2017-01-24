@@ -47,7 +47,7 @@ export default Ember.Service.extend({
             variant: period,
             revenue: transaction.get('value')/100,
         });
-
+    
         this.get('facebook').purchase({
             content_type: plan.get('category'),
             content_name: plan.get('identifier'),
