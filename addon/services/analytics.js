@@ -179,7 +179,7 @@ export default Ember.Service.extend({
     event(category, action, label, value) {
         if ( this.exist() ) {
             window.ga('send', 'event', category, action, label, value);
-            this.debugger('send:event', { category: category, action: action });
+            this.debugger('send:event', { category: category, action: action, label:label, value:value });
         }
     },
 
