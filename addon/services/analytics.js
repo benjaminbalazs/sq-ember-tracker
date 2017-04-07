@@ -1,9 +1,11 @@
 import Ember from 'ember';
+import config from 'ember-get-config';
 
 export default Ember.Service.extend({
 
     user: Ember.inject.service(),
     serviceName: 'user',
+    fastboot: Ember.inject.service(),
 
     //
 
@@ -41,9 +43,9 @@ export default Ember.Service.extend({
 	init() {
 
 		this._super();
+        
         var self = this;
 
-		var config = Ember.getOwner(this)._lookupFactory('config:environment');
         this.set('environment', config.environment);
 
         //
@@ -70,7 +72,7 @@ export default Ember.Service.extend({
 
         //
 
-        if ( config.GOOGLE_ANALYTICS ) {
+        if ( config.GOOGLE_ANALYTICS && this.get('fastboot.isFastBoot') === false ) {
 
             if ( config.GOOGLE_ANALYTICS.debug === true ) {
                 this.set('debug', true);
@@ -79,6 +81,7 @@ export default Ember.Service.extend({
             if ( config.GOOGLE_ANALYTICS.tracking_id ) {
 
                 this.create(config.GOOGLE_ANALYTICS.tracking_id);
+
                 this.get(this.get("serviceName")).on('init', this, function() {
                     self.didUserLoad();
                     self.storageObserver();
@@ -98,7 +101,7 @@ export default Ember.Service.extend({
 	},
 
     exist() {
-        return ( window.ga );
+        return ( window.ga && this.get('fastboot.isFastBoot') === false );
     },
 
     debugger(action, data) {

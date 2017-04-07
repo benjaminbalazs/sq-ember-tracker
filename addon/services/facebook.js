@@ -1,12 +1,13 @@
 import Ember from 'ember';
+import config from 'ember-get-config';
 
 export default Ember.Service.extend({
 
+    fastboot: Ember.inject.service(),
+    
     init() {
 
         this._super();
-
-        var config = Ember.getOwner(this)._lookupFactory('config:environment');
 
         if ( this.shouldinit() ) {
 
@@ -32,7 +33,7 @@ export default Ember.Service.extend({
     //
 
     shouldinit() {
-        return true;
+        return ( this.get('fastboot.isFastBoot') === false );
     },
 
     //

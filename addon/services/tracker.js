@@ -1,30 +1,41 @@
 import Ember from 'ember';
+import config from 'ember-get-config';
 
 export default Ember.Service.extend({
 
     analytics: Ember.inject.service(),
     facebook: Ember.inject.service(),
     intercom: Ember.inject.service(),
+    fastboot: Ember.inject.service(),
 
     // ROUTER LISTENER ---------------------------------------------------------
 
     init() {
 
-        var config = Ember.getOwner(this)._lookupFactory('config:environment');
-        this.set('environment', config.environment);
+        this._super();
 
-        if ( config.TRACKER ) {
-            if ( config.TRACKER.baseURL ) {
-                this.set('baseURL', config.TRACKER.baseURL);
+        if ( this.shouldinit() ) {
+
+            this.set('environment', config.environment);
+
+            if ( config.TRACKER ) {
+                if ( config.TRACKER.baseURL ) {
+                    this.set('baseURL', config.TRACKER.baseURL);
+                }
             }
+
+            //
+
+            this.router.on('didTransition', this, function() {
+                this.pageview();
+            });
+
         }
 
-        //
+    },
 
-        this.router.on('didTransition', this, function() {
-            this.pageview();
-        });
-
+    shouldinit() {
+        return ( this.get('fastboot.isFastBoot') === false );
     },
 
     // STEPS -------------------------------------------------------------------
@@ -47,7 +58,7 @@ export default Ember.Service.extend({
             variant: period,
             revenue: transaction.get('value')/100,
         });
-    
+
         this.get('facebook').purchase({
             content_type: plan.get('category'),
             content_name: plan.get('identifier'),
@@ -123,20 +134,26 @@ export default Ember.Service.extend({
     //
 
     trackFacebookPageView(object) {
-        this.get('facebook').pageview(object);
+        if ( this.shouldinit() ) {
+            this.get('facebook').pageview(object);
+        }
     },
 
     // GENERAL -----------------------------------------------------------------
 
     pageview() {
 
-        var page = this.getRouteName();
-        page = this.getPageUrl(page);
+        if ( this.shouldinit() ) {
 
-        if ( page !== null ) {
-            this.get('analytics').pageview(page,this.getTrackerName(page), this.getPageFields());
-            this.trackFacebookPageView({ location: page });
-            this.get('intercom').pageview();
+            var page = this.getRouteName();
+            page = this.getPageUrl(page);
+
+            if ( page !== null ) {
+                this.get('analytics').pageview(page,this.getTrackerName(page), this.getPageFields());
+                this.trackFacebookPageView({ location: page });
+                this.get('intercom').pageview();
+            }
+
         }
 
     },
