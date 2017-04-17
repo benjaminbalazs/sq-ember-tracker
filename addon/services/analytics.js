@@ -43,7 +43,7 @@ export default Ember.Service.extend({
 	init() {
 
 		this._super();
-        
+
         var self = this;
 
         this.set('environment', config.environment);
@@ -72,26 +72,30 @@ export default Ember.Service.extend({
 
         //
 
-        if ( config.GOOGLE_ANALYTICS && this.get('fastboot.isFastBoot') === false ) {
+        if ( this.get('fastboot.isFastBoot') === false ) {
 
-            if ( config.GOOGLE_ANALYTICS.debug === true ) {
-                this.set('debug', true);
-            }
+            if ( config.GOOGLE_ANALYTICS ) {
 
-            if ( config.GOOGLE_ANALYTICS.tracking_id ) {
+                if ( config.GOOGLE_ANALYTICS.debug === true ) {
+                    this.set('debug', true);
+                }
 
-                this.create(config.GOOGLE_ANALYTICS.tracking_id);
+                if ( config.GOOGLE_ANALYTICS.tracking_id ) {
 
-                this.get(this.get("serviceName")).on('init', this, function() {
-                    self.didUserLoad();
-                    self.storageObserver();
-                });
+                    this.create(config.GOOGLE_ANALYTICS.tracking_id);
 
-                if ( config.GOOGLE_ANALYTICS.ecommerce ) {
-                    if ( this.exist() ) {
-                        window.ga('require', 'ec');
-                        window.ga('set', '&cu', 'USD');
+                    this.get(this.get("serviceName")).on('init', this, function() {
+                        self.didUserLoad();
+                        self.storageObserver();
+                    });
+
+                    if ( config.GOOGLE_ANALYTICS.ecommerce ) {
+                        if ( this.exist() ) {
+                            window.ga('require', 'ec');
+                            window.ga('set', '&cu', 'USD');
+                        }
                     }
+
                 }
 
             }
