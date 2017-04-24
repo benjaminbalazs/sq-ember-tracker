@@ -12,6 +12,7 @@ module.exports = {
       if ( !process.env.EMBER_CLI_FASTBOOT ) {
           app.import('vendor/analytics.js');
           app.import('vendor/facebook.js');
+          app.import('vendor/twitter.js');
       }
 
     },
