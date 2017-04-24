@@ -6,6 +6,7 @@ export default Ember.Service.extend({
     analytics: Ember.inject.service(),
     facebook: Ember.inject.service(),
     intercom: Ember.inject.service(),
+    twitter: Ember.inject.service(),
     fastboot: Ember.inject.service(),
 
     // ROUTER LISTENER ---------------------------------------------------------
@@ -151,6 +152,7 @@ export default Ember.Service.extend({
             if ( page !== null ) {
                 this.get('analytics').pageview(page,this.getTrackerName(page), this.getPageFields());
                 this.trackFacebookPageView({ location: page });
+                this.get('twitter').pageview();
                 this.get('intercom').pageview();
             }
 
