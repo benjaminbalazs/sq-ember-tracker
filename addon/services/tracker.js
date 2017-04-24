@@ -140,6 +140,18 @@ export default Ember.Service.extend({
         }
     },
 
+    trackTwitterPageView(object) {
+        if ( this.shouldinit() ) {
+            this.get('facebook').pageview(object);
+        }
+    },
+
+    trackIntercomPageView() {
+        if ( this.shouldinit() ) {
+            this.get('intercom').pageview();
+        }
+    },
+
     // GENERAL -----------------------------------------------------------------
 
     pageview() {
@@ -152,8 +164,8 @@ export default Ember.Service.extend({
             if ( page !== null ) {
                 this.get('analytics').pageview(page,this.getTrackerName(page), this.getPageFields());
                 this.trackFacebookPageView({ location: page });
-                this.get('twitter').pageview();
-                this.get('intercom').pageview();
+                this.trackTwitterPageView({ location: page });
+                this.trackIntercomPageView({ location: page });
             }
 
         }
