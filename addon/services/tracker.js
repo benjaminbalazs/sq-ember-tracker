@@ -36,7 +36,7 @@ export default Ember.Service.extend({
     },
 
     shouldinit() {
-        return ( this.get('fastboot.isFastBoot') === false );
+        return ( this.get('fastboot.isFastBoot') !== true );
     },
 
     // STEPS -------------------------------------------------------------------

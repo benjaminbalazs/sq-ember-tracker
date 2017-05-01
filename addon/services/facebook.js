@@ -4,7 +4,7 @@ import config from 'ember-get-config';
 export default Ember.Service.extend({
 
     fastboot: Ember.inject.service(),
-    
+
     init() {
 
         this._super();
@@ -33,7 +33,7 @@ export default Ember.Service.extend({
     //
 
     shouldinit() {
-        return ( this.get('fastboot.isFastBoot') === false );
+        return ( this.get('fastboot.isFastBoot') !== true );
     },
 
     //
