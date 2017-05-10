@@ -146,7 +146,7 @@ export default Ember.Service.extend({
         }
     },
 
-    trackIntercomPageView() {
+    trackIntercomPageView(object) {
         if ( this.shouldinit() ) {
             this.get('intercom').pageview();
         }
