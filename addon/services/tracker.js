@@ -71,7 +71,7 @@ export default Ember.Service.extend({
 
         //
 
-        this.get('intercom').event('checkout_purchase',{
+        this.get('intercom').event('purchase',{
             plan_id: plan.get('id'),
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
@@ -100,7 +100,7 @@ export default Ember.Service.extend({
 
         //
 
-        this.get('intercom').event('checkout_added',{
+        this.get('intercom').event('addToCart',{
             plan_id: plan.get('id'),
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
@@ -124,7 +124,7 @@ export default Ember.Service.extend({
 
         //
 
-        this.get('intercom').event('checkout_view',{
+        this.get('intercom').event('viewContent',{
             plan_id: plan.get('id'),
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
@@ -204,10 +204,10 @@ export default Ember.Service.extend({
         if ( action ) { data.action = action; }
         if ( label ) { data.label = label; }
         if ( value ) { data.value = value; }
-        this.get('facebook').event(category, data);
+        this.get('facebook').event(category + action, data);
 
         //
-        this.get('intercom').event(category.toLowerCase() + '_' + action.toLowerCase(), data);
+        this.get('intercom').event(category + action, data);
 
     },
 

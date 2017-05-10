@@ -66,6 +66,12 @@ export default Ember.Service.extend({
         if ( this.exist() ) {
 
         }
+    },
+
+    lead() {
+        if ( this.exist() ) {
+
+        }
     }
 
 });

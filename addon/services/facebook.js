@@ -73,6 +73,13 @@ export default Ember.Service.extend({
         }
     },
 
+    lead() {
+        if ( this.exist() ) {
+            window.fbq('track', 'lead');
+            this.debugger('lead');
+        }
+    },
+
     // ECOMMERCE
 
     addToCart(data) {
