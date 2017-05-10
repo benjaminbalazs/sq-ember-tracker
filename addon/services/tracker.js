@@ -43,7 +43,7 @@ export default Ember.Service.extend({
 
     signup() {
 
-        this.get('analytics').event('Sign Up', 'Basic Information');
+        this.get('analytics').event('Registration', 'Complete');
         this.get('facebook').completeRegistration();
 
     },
@@ -142,7 +142,7 @@ export default Ember.Service.extend({
 
     trackTwitterPageView(object) {
         if ( this.shouldinit() ) {
-            this.get('facebook').pageview(object);
+            this.get('twitter').pageview(object);
         }
     },
 

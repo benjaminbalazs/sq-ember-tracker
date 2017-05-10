@@ -45,7 +45,11 @@ export default Ember.Service.extend({
 
     debugger(action, data) {
         if ( this.get('debug') ) {
-            console.log('twitter:', action, data);
+            if ( data ) {
+                console.log('twitter:', action, data);
+            } else {
+                console.log('twitter:', action);
+            }
         }
     },
 
@@ -57,5 +61,11 @@ export default Ember.Service.extend({
             this.debugger('PageView');
         }
     },
+
+    purchase() {
+        if ( this.exist() ) {
+
+        }
+    }
 
 });
