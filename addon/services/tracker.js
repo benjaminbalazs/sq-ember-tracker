@@ -41,6 +41,13 @@ export default Ember.Service.extend({
 
     // STEPS -------------------------------------------------------------------
 
+    lead() {
+
+        this.get('analytics').event('Lead', 'Click');
+        this.get('facebook').lead();
+
+    },
+
     signup() {
 
         this.get('analytics').event('Registration', 'Complete');
