@@ -67,6 +67,7 @@ export default Ember.Service.extend({
 
     viewContent(data) {
         if ( !data ) { data = {}; }
+        data.content_type = 'product';
         if ( this.exist() ) {
             window.fbq('track', 'ViewContent', data);
             this.debugger('ViewContent', data);
@@ -84,6 +85,7 @@ export default Ember.Service.extend({
 
     addToCart(data) {
         if ( !data ) { data = {}; }
+        data.content_type = 'product';
         if ( this.exist() ) {
             window.fbq('track', 'AddToCart', data);
             this.debugger('AddToCart', data);
