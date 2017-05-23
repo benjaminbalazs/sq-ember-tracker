@@ -60,7 +60,6 @@ export default Ember.Service.extend({
     purchase(plan, period, transaction) {
 
         this.get('analytics').purchase({
-            id: plan.get('id'),
             name: plan.get('identifier'),
             category: plan.get('category'),
             variant: period,
@@ -79,7 +78,6 @@ export default Ember.Service.extend({
         //
 
         this.get('intercom').event('Purchase',{
-            plan_id: plan.get('id'),
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
             period: period,
@@ -93,7 +91,6 @@ export default Ember.Service.extend({
     added(plan, period) {
 
         this.get('analytics').addProduct({
-            id: plan.get('id'),
             name: plan.get('identifier'),
             category: plan.get('category'),
             variant: period,
@@ -108,7 +105,6 @@ export default Ember.Service.extend({
         //
 
         this.get('intercom').event('AddToCart',{
-            plan_id: plan.get('id'),
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
             period: period,
