@@ -119,7 +119,6 @@ export default Ember.Service.extend({
     view(plan) {
 
         this.get('analytics').addImpression({
-            id: plan.get('id'),
             name: plan.get('identifier'),
             category: plan.get('category'),
         });
@@ -132,7 +131,6 @@ export default Ember.Service.extend({
         //
 
         this.get('intercom').event('ViewContent',{
-            plan_id: plan.get('id'),
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
         });
