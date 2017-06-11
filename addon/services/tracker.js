@@ -57,33 +57,34 @@ export default Ember.Service.extend({
 
     // PURCHASE ----------------------------------------------------------------
 
-    purchase(plan, period, transaction) {
+    purchase(plan, period, payment_type) {
+
+        var value = plan.get('price_' + period);
 
         this.get('analytics').purchase({
             name: plan.get('identifier'),
             category: plan.get('category'),
             variant: period,
-            revenue: transaction.get('value')/100,
+            revenue: value,
+            currency: plan.get('currency_code'),
         });
 
         this.get('facebook').purchase({
             content_type: plan.get('category'),
             content_name: plan.get('identifier'),
             period: period,
-            value: transaction.get('value')/100,
-            order_id: transaction.get('id'),
-            currency: 'USD'
+            value: value,
+            currency: plan.get('currency_code'),
+            payment_type: payment_type
         });
-
-        //
 
         this.get('intercom').event('Purchase',{
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
             period: period,
-            transaction_value: transaction.get('value')/100,
-            transaction_id: transaction.get('id'),
-            transaction_payment_type : transaction.get('payment_type')
+            value: value,
+            payment_type: payment_type,
+            currency: plan.get('currency_code')
         });
 
     },
