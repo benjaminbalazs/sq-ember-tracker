@@ -57,6 +57,22 @@ export default Ember.Service.extend({
 
     // PURCHASE ----------------------------------------------------------------
 
+    initiateCheckout(domain) {
+        
+        this.get('analytics').event('Initiate', 'Checkout', domain);
+
+        this.get('facebook').initiateCheckout({
+            value: 29,
+            currency: 'USD',
+            content_name: domain,
+        });
+
+        this.get('intercom').event('InitiateCheckout',{
+            domain: domain,
+        });
+
+    },
+
     purchase(plan, period, payment_type) {
 
         var value = plan.get('price_' + period);
