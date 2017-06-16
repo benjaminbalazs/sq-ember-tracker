@@ -54,8 +54,12 @@ export default Ember.Service.extend({
     signup(model) {
 
         this.get('analytics').event('Registration', 'Complete');
+
         this.get('facebook').completeRegistration();
+
         this.get('mixpanel').signup(model.get('id'));
+        
+        this.get('mixpanel').event('Registration', 'Complete');
 
     },
 
