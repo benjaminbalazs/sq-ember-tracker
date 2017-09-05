@@ -5,8 +5,8 @@ export default Ember.Service.extend({
 
     analytics: Ember.inject.service(),
     facebook: Ember.inject.service(),
-    intercom: Ember.inject.service(),
     twitter: Ember.inject.service(),
+    customerio: Ember.inject.service(),
     fastboot: Ember.inject.service(),
 
     // ROUTER LISTENER ---------------------------------------------------------
@@ -76,7 +76,7 @@ export default Ember.Service.extend({
             content_name: domain,
         });
 
-        this.get('intercom').event('InitiateCheckout',{
+        this.get('customerio').event('initiate_checkout',{
             domain: domain,
         });
 
@@ -103,7 +103,7 @@ export default Ember.Service.extend({
             payment_type: payment_type
         });
 
-        this.get('intercom').event('Purchase',{
+        this.get('customerio').event('purchase',{
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
             period: period,
@@ -128,7 +128,7 @@ export default Ember.Service.extend({
             period: period,
         });
 
-        this.get('intercom').event('AddToCart',{
+        this.get('customerio').event('add_to_cart',{
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
             period: period,
@@ -148,7 +148,7 @@ export default Ember.Service.extend({
             content_name: plan.get('identifier'),
         });
 
-        this.get('intercom').event('ViewContent',{
+        this.get('customerio').event('view_content',{
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
         });
@@ -159,7 +159,7 @@ export default Ember.Service.extend({
 
         this.get('facebook').addPaymentInfo();
 
-        this.get('intercom').event('AddPaymentInfo');
+        this.get('customerio').event('add_payment_info');
 
     },
 
@@ -178,7 +178,7 @@ export default Ember.Service.extend({
 
                 this.trackFacebookPageView({ location: page });
                 this.trackTwitterPageView({ location: page });
-                this.trackIntercomPageView({ location: page });
+                this.trackCustomerIoPageView({ location: page });
 
             }
 
@@ -200,9 +200,9 @@ export default Ember.Service.extend({
         }
     },
 
-    trackIntercomPageView() {
+    trackCustomerIoPageView(object) {
         if ( this.shouldinit() ) {
-            this.get('intercom').pageview();
+            this.get('customerio').pageview(object);
         }
     },
 
@@ -241,7 +241,7 @@ export default Ember.Service.extend({
         this.get('facebook').event(category + action, data);
 
         //
-        this.get('intercom').event(category + action, data);
+        this.get('customerio').event(category.toLowerCase() + '_' + action.toLowerCase(), data);
 
     },
 
