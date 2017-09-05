@@ -7,7 +7,6 @@ export default Ember.Service.extend({
     facebook: Ember.inject.service(),
     intercom: Ember.inject.service(),
     twitter: Ember.inject.service(),
-    mixpanel: Ember.inject.service(),
     fastboot: Ember.inject.service(),
 
     // ROUTER LISTENER ---------------------------------------------------------
@@ -57,17 +56,11 @@ export default Ember.Service.extend({
 
         this.get('facebook').completeRegistration();
 
-        this.get('mixpanel').signup(model.get('id'));
-        
-        this.get('mixpanel').event('Registration', 'Complete');
-
     },
 
     //
 
     login() {
-
-        this.get('mixpanel').login();
 
     },
 
@@ -84,10 +77,6 @@ export default Ember.Service.extend({
         });
 
         this.get('intercom').event('InitiateCheckout',{
-            domain: domain,
-        });
-
-        this.get('mixpanel').event('InitiateCheckout',{
             domain: domain,
         });
 
@@ -123,14 +112,6 @@ export default Ember.Service.extend({
             currency: plan.get('currency_code')
         });
 
-        this.get('mixpanel').charge(value, {
-            plan_name: plan.get('identifier'),
-            plan_category: plan.get('category'),
-            period: period,
-            payment_type: payment_type,
-            currency: plan.get('currency_code')
-        });
-
     },
 
     added(plan, period) {
@@ -148,12 +129,6 @@ export default Ember.Service.extend({
         });
 
         this.get('intercom').event('AddToCart',{
-            plan_name: plan.get('identifier'),
-            plan_category: plan.get('category'),
-            period: period,
-        });
-
-        this.get('mixpanel').event('AddToCart',{
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
             period: period,
@@ -178,11 +153,6 @@ export default Ember.Service.extend({
             plan_category: plan.get('category'),
         });
 
-        this.get('mixpanel').event('ViewContent',{
-            plan_name: plan.get('identifier'),
-            plan_category: plan.get('category'),
-        });
-
     },
 
     paymentInfo() {
@@ -190,8 +160,6 @@ export default Ember.Service.extend({
         this.get('facebook').addPaymentInfo();
 
         this.get('intercom').event('AddPaymentInfo');
-
-        this.get('mixpanel').event('AddPaymentInfo');
 
     },
 
@@ -211,7 +179,6 @@ export default Ember.Service.extend({
                 this.trackFacebookPageView({ location: page });
                 this.trackTwitterPageView({ location: page });
                 this.trackIntercomPageView({ location: page });
-                this.trackMixpanelPageView({ location: page });
 
             }
 
@@ -236,12 +203,6 @@ export default Ember.Service.extend({
     trackIntercomPageView() {
         if ( this.shouldinit() ) {
             this.get('intercom').pageview();
-        }
-    },
-
-    trackMixpanelPageView(object) {
-        if ( this.shouldinit() ) {
-            this.get('mixpanel').pageview(object);
         }
     },
 
@@ -281,9 +242,6 @@ export default Ember.Service.extend({
 
         //
         this.get('intercom').event(category + action, data);
-
-        //
-        this.get('mixpanel').event(category + action, data);
 
     },
 
