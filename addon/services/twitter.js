@@ -34,6 +34,7 @@ export default Ember.Service.extend({
     //
 
     shouldinit() {
+        return false;
         return ( this.get('fastboot.isFastBoot') !== true );
     },
 
