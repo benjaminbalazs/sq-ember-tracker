@@ -114,12 +114,13 @@ export default Ember.Service.extend({
 
     },
 
-    added(plan, period) {
+    added(domain, plan, period) {
 
         this.get('analytics').addProduct({
             name: plan.get('identifier'),
             category: plan.get('category'),
             variant: period,
+            domain: domain,
         });
 
         this.get('facebook').addToCart({
@@ -132,15 +133,17 @@ export default Ember.Service.extend({
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
             period: period,
+            domain: domain,
         });
 
     },
 
-    view(plan) {
+    view(domain, plan) {
 
         this.get('analytics').addImpression({
             name: plan.get('identifier'),
             category: plan.get('category'),
+            domain: domain,
         });
 
         this.get('facebook').viewContent({
@@ -151,6 +154,7 @@ export default Ember.Service.extend({
         this.get('customerio').event('view_content',{
             plan_name: plan.get('identifier'),
             plan_category: plan.get('category'),
+            domain: domain
         });
 
     },
