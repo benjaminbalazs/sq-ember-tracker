@@ -5,7 +5,6 @@ export default Ember.Service.extend({
 
     analytics: Ember.inject.service(),
     facebook: Ember.inject.service(),
-    twitter: Ember.inject.service(),
     customerio: Ember.inject.service(),
     fastboot: Ember.inject.service(),
 
@@ -181,7 +180,6 @@ export default Ember.Service.extend({
                 this.get('analytics').pageview(page,this.getTrackerName(page), this.getPageFields());
 
                 this.trackFacebookPageView({ location: page });
-                this.trackTwitterPageView({ location: page });
                 this.trackCustomerIoPageView({ location: page });
 
             }
@@ -195,12 +193,6 @@ export default Ember.Service.extend({
     trackFacebookPageView(object) {
         if ( this.shouldinit() ) {
             this.get('facebook').pageview(object);
-        }
-    },
-
-    trackTwitterPageView(object) {
-        if ( this.shouldinit() ) {
-            this.get('twitter').pageview(object);
         }
     },
 
