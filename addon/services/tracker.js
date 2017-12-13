@@ -65,23 +65,23 @@ export default Ember.Service.extend({
 
     // PURCHASE ----------------------------------------------------------------
 
-    initiateCheckout(domain) {
+    initiateCheckout(identifier) {
 
-        this.get('analytics').event('Initiate', 'Checkout', domain);
+        this.get('analytics').event('Initiate', 'Checkout', identifier);
 
         this.get('facebook').initiateCheckout({
-            value: 29,
+            value: 12,
             currency: 'USD',
-            content_name: domain,
+            content_name: identifier,
         });
 
         this.get('customerio').event('initiate_checkout',{
-            domain: domain,
+            identifier: identifier,
         });
 
     },
 
-    purchase(plan, period, payment_type) {
+    purchase(plan, period) {
 
         var value = plan.get('price_' + period);
 
@@ -99,15 +99,12 @@ export default Ember.Service.extend({
             period: period,
             value: value,
             currency: plan.get('currency_code'),
-            payment_type: payment_type
         });
 
         this.get('customerio').event('purchase',{
             plan_name: plan.get('identifier'),
-            plan_category: plan.get('category'),
             period: period,
             value: value,
-            payment_type: payment_type,
             currency: plan.get('currency_code')
         });
 
@@ -117,7 +114,6 @@ export default Ember.Service.extend({
 
         this.get('analytics').addProduct({
             name: plan.get('identifier'),
-            category: plan.get('category'),
             variant: period,
             domain: domain,
         });
@@ -130,7 +126,6 @@ export default Ember.Service.extend({
 
         this.get('customerio').event('add_to_cart',{
             plan_name: plan.get('identifier'),
-            plan_category: plan.get('category'),
             period: period,
             domain: domain,
         });
@@ -141,7 +136,6 @@ export default Ember.Service.extend({
 
         this.get('analytics').addImpression({
             name: plan.get('identifier'),
-            category: plan.get('category'),
             domain: domain,
         });
 
@@ -152,17 +146,8 @@ export default Ember.Service.extend({
 
         this.get('customerio').event('view_content',{
             plan_name: plan.get('identifier'),
-            plan_category: plan.get('category'),
             domain: domain
         });
-
-    },
-
-    paymentInfo() {
-
-        this.get('facebook').addPaymentInfo();
-
-        this.get('customerio').event('add_payment_info');
 
     },
 
