@@ -35,7 +35,11 @@ export default Ember.Service.extend({
     },
 
     shouldinit() {
-        return ( this.get('fastboot.isFastBoot') !== true );
+        if ( this.get('fastboot.isFastBoot') !== true ) {
+            return true;
+        } else {
+            return false;
+        }
     },
 
     // STEPS -------------------------------------------------------------------
@@ -150,7 +154,7 @@ export default Ember.Service.extend({
 
             var page = this.getRouteName();
             page = this.getPageUrl(page);
-
+            
             if ( page !== null ) {
 
                 this.get('analytics').pageview(page,this.getTrackerName(page), this.getPageFields());

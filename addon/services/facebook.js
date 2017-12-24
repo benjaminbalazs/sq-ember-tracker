@@ -4,46 +4,33 @@ import config from 'ember-get-config';
 export default Ember.Service.extend({
 
     fastboot: Ember.inject.service(),
+    hasSetup: false,
 
-    init() {
+    //
 
-        this._super();
+    setup() {
 
-        if ( this.shouldinit() ) {
+        if ( this.shouldinit() === false ) return;
 
-            if ( config.FACEBOOK ) {
+        this.set('hasSetup', true);
 
-                if ( config.FACEBOOK.debug === true ) {
-                    this.set('debug', true);
-                }
-
-                if ( config.FACEBOOK.pixel_id ) {
-                    if ( this.exist() ) {
-                        window.fbq('init', config.FACEBOOK.pixel_id);
-                        this.debugger('init', config.FACEBOOK.pixel_id);
-                    }
-                }
-
-            }
-
-        }
+        window.fbq('init', config.FACEBOOK.pixel_id);
+        this.debugger('init', config.FACEBOOK.pixel_id);
 
     },
 
     //
 
     shouldinit() {
-        return ( this.get('fastboot.isFastBoot') !== true );
-    },
-
-    //
-
-    exist() {
-        return ( window.fbq );
+        if ( this.get('fastboot.isFastBoot') !== true && window.fbq ) {
+            return true;
+        } else {
+            return false;
+        }
     },
 
     debugger(action, data) {
-        if ( this.get('debug') ) {
+        if ( config.FACEBOOK.debug === true ) {
             console.log('facebook:', action, data);
         }
     },
@@ -51,7 +38,7 @@ export default Ember.Service.extend({
     // PUBLIC API -----------------------------------------------------------------
 
     pageview(data) {
-        if ( this.exist() ) {
+        if ( this.get('hasSetup') === true ) {
             window.fbq('track', 'PageView', data);
             this.debugger('PageView', data);
         }
@@ -59,7 +46,7 @@ export default Ember.Service.extend({
 
     event(category, data) {
         if ( !data ) { data = {}; }
-        if ( this.exist() ) {
+        if ( this.get('hasSetup') === true ) {
             window.fbq('trackCustom', category, data);
             this.debugger(category, data);
         }
@@ -68,14 +55,14 @@ export default Ember.Service.extend({
     viewContent(data) {
         if ( !data ) { data = {}; }
         data.content_type = 'product';
-        if ( this.exist() ) {
+        if ( this.get('hasSetup') === true ) {
             window.fbq('track', 'ViewContent', data);
             this.debugger('ViewContent', data);
         }
     },
 
     lead() {
-        if ( this.exist() ) {
+        if ( this.get('hasSetup') === true ) {
             window.fbq('track', 'lead');
             this.debugger('lead');
         }
@@ -86,7 +73,7 @@ export default Ember.Service.extend({
     addToCart(data) {
         if ( !data ) { data = {}; }
         data.content_type = 'product';
-        if ( this.exist() ) {
+        if ( this.get('hasSetup') === true ) {
             window.fbq('track', 'AddToCart', data);
             this.debugger('AddToCart', data);
         }
@@ -94,7 +81,7 @@ export default Ember.Service.extend({
 
     purchase(data) {
         if ( !data ) { data = {}; }
-        if ( this.exist() ) {
+        if ( this.get('hasSetup') === true ) {
             window.fbq('track', 'Purchase', data);
             this.debugger('Purchase', data);
         }
@@ -104,7 +91,7 @@ export default Ember.Service.extend({
 
     initiateCheckout(data) {
         if ( !data ) { data = {}; }
-        if ( this.exist() ) {
+        if ( this.get('hasSetup') === true ) {
             window.fbq('track', 'InitiateCheckout', data);
             this.debugger('InitiateCheckout', data);
         }
@@ -112,14 +99,14 @@ export default Ember.Service.extend({
 
     addPaymentInfo(data) {
         if ( !data ) { data = {}; }
-        if ( this.exist() ) {
+        if ( this.get('hasSetup') === true ) {
             window.fbq('track', 'AddPaymentInfo', data);
             this.debugger('AddPaymentInfo', data);
         }
     },
 
     completeRegistration() {
-        if ( this.exist() ) {
+        if ( this.get('hasSetup') === true ) {
             window.fbq('track', 'CompleteRegistration');
             this.debugger('CompleteRegistration');
         }
@@ -127,7 +114,7 @@ export default Ember.Service.extend({
 
     lead(data) {
         if ( !data ) { data = {}; }
-        if ( this.exist() ) {
+        if ( this.get('hasSetup') === true ) {
             window.fbq('track', 'Lead', data);
             this.debugger('Lead', data);
         }

@@ -3,8 +3,6 @@ import config from 'ember-get-config';
 
 export default Ember.Service.extend({
 
-    user: Ember.inject.service(),
-    serviceName: 'user',
     fastboot: Ember.inject.service(),
 
     //
@@ -77,8 +75,6 @@ export default Ember.Service.extend({
 
         var self = this;
 
-        this.set('environment', config.environment);
-
         //
 
         if ( this.get('user.storage.utm_content') ) {
@@ -101,76 +97,46 @@ export default Ember.Service.extend({
             this.set('utm_campaign', this.get('user.storage.utm_campaign'));
         }
 
-        //
-
-        if ( this.get('fastboot.isFastBoot') === false ) {
-
-            if ( config.GOOGLE_ANALYTICS ) {
-
-                if ( config.GOOGLE_ANALYTICS.debug === true ) {
-                    this.set('debug', true);
-                }
-
-                if ( config.GOOGLE_ANALYTICS.tracking_id ) {
-
-                    this.create(config.GOOGLE_ANALYTICS.tracking_id);
-
-                    this.get(this.get("serviceName")).on('init', this, function() {
-                        self.didUserLoad();
-                        self.storageObserver();
-                    });
-
-                    if ( config.GOOGLE_ANALYTICS.ecommerce ) {
-                        if ( this.exist() ) {
-                            window.ga('require', 'ec');
-                            window.ga('set', '&cu', 'USD');
-                        }
-                    }
-
-                }
-
-            }
-
-        }
-
 	},
 
+    shouldinit() {
+
+        if ( this.get('fastboot.isFastBoot') !== true && config.GOOGLE_ANALYTICS && config.GOOGLE_ANALYTICS.tracking_id ) {
+            return true;
+        } else {
+            return false;
+        }
+
+    },
+
+    setup() {
+
+        if ( this.shouldinit() === false ) return;
+
+        this.create(config.GOOGLE_ANALYTICS.tracking_id);
+
+        if ( config.GOOGLE_ANALYTICS.ecommerce ) {
+            if ( this.exist() ) {
+                window.ga('require', 'ec');
+                window.ga('set', '&cu', 'USD');
+            }
+        }
+
+    },
+
     exist() {
-        return ( window.ga && this.get('fastboot.isFastBoot') !== true );
+        if ( window.ga && this.get('fastboot.isFastBoot') !== true && this.get('trackers').length !== 0 ) {
+            return true;
+        } else {
+            return false;
+        }
     },
 
     debugger(action, data) {
-        if ( this.get('debug') ) {
+        if ( config.GOOGLE_ANALYTICS.debug === true ) {
             console.log('analytics:', action, data);
         }
     },
-
-    // AUTO USER ID ------------------------------------------------------------
-
-    didUserLoad() {
-
-        if ( this.exist() ) {
-
-            var model =  this.get(this.get("serviceName")+'.model');
-
-            if ( model.get('id') ) {
-                this.customSet('uid', model.get('id'));
-            }
-
-        }
-    },
-
-    storageObserver: Ember.observer('user.storage.countrycode_identifier', 'user.storage.language_identifier', function() {
-
-        if ( this.get('user.storage.countrycode_identifier') ) {
-            this.customSet('countrycode_identifier', this.get('user.storage.countrycode_identifier'));
-        }
-
-        if ( this.get('user.storage.language_identifier') ) {
-            this.customSet('language_identifier', this.get('user.storage.language_identifier'));
-        }
-
-    }),
 
     // STANDARD ----------------------------------------------------------------
 
