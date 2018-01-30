@@ -60,18 +60,20 @@ export default Ember.Service.extend({
 
     // PURCHASE ----------------------------------------------------------------
 
-    initiateCheckout(identifier) {
+    initiateCheckout(site, plan) {
 
-        this.get('analytics').event('Initiate', 'Checkout', identifier);
+        this.get('analytics').event('Initiate', 'Checkout', plan.get('identifier'));
 
         this.get('facebook').initiateCheckout({
             value: 12,
             currency: 'USD',
-            content_name: identifier,
+            content_name: plan.get('identifier'),
         });
 
-        this.get('customerio').event('initiate_checkout',{
-            identifier: identifier,
+        this.get('customerio').event('initiate_checkout', {
+            site: site,
+            plan_identifier: plan.get('identifier'),
+            plan_id: plan.get('id')
         });
 
     },
@@ -97,7 +99,7 @@ export default Ember.Service.extend({
         });
 
         this.get('customerio').event('purchase',{
-            plan_name: plan.get('identifier'),
+            plan_identifier: plan.get('identifier'),
             period: period,
             value: value,
             currency: plan.get('currency_code')
@@ -120,7 +122,7 @@ export default Ember.Service.extend({
         });
 
         this.get('customerio').event('add_to_cart',{
-            plan_name: plan.get('identifier'),
+            plan_identifier: plan.get('identifier'),
             period: period,
             domain: domain,
         });
@@ -154,7 +156,7 @@ export default Ember.Service.extend({
 
             var page = this.getRouteName();
             page = this.getPageUrl(page);
-            
+
             if ( page !== null ) {
 
                 this.get('analytics').pageview(page,this.getTrackerName(page), this.getPageFields());
