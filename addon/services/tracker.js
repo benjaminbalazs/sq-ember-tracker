@@ -78,7 +78,7 @@ export default Ember.Service.extend({
 
     },
 
-    purchase(plan, period) {
+    purchase(plan, period, method) {
 
         var value = plan.get('price_' + period);
 
@@ -100,6 +100,7 @@ export default Ember.Service.extend({
 
         this.get('customerio').event('purchase',{
             plan_identifier: plan.get('identifier'),
+            method: method,
             period: period,
             value: value,
             currency: plan.get('currency_code')
