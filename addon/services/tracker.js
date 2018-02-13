@@ -144,7 +144,8 @@ export default Ember.Service.extend({
 
         this.get('customerio').event('view_content',{
             plan_name: plan.get('identifier'),
-            domain: domain
+            domain: domain,
+            url: window.location.href,
         });
 
     },
