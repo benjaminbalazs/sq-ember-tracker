@@ -73,7 +73,8 @@ export default Ember.Service.extend({
         this.get('customerio').event('initiate_checkout', {
             site: site,
             plan_identifier: plan.get('identifier'),
-            plan_id: plan.get('id')
+            plan_id: plan.get('id'),
+            url: window.location.href,
         });
 
     },
@@ -126,6 +127,7 @@ export default Ember.Service.extend({
             plan_identifier: plan.get('identifier'),
             period: period,
             domain: domain,
+            url: window.location.href,
         });
 
     },
