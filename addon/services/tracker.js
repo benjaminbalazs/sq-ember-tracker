@@ -79,7 +79,7 @@ export default Ember.Service.extend({
 
     },
 
-    purchase(plan, period, method) {
+    purchase(plan, period, method, href, url) {
 
         var value = plan.get('price_' + period);
 
@@ -104,6 +104,8 @@ export default Ember.Service.extend({
             method: method,
             period: period,
             value: value,
+            href: href,
+            url: url,
             currency: plan.get('currency_code')
         });
 
