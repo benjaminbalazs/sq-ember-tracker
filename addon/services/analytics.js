@@ -125,7 +125,7 @@ export default Ember.Service.extend({
     },
 
     exist() {
-        if ( window.ga && this.get('fastboot.isFastBoot') !== true && this.get('trackers').length !== 0 ) {
+        if ( window.ga && this.get('fastboot.isFastBoot') !== true ) {
             return true;
         } else {
             return false;
