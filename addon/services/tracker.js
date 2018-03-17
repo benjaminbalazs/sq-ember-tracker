@@ -52,105 +52,7 @@ export default Ember.Service.extend({
 
     },
 
-    //
-
     login() {
-
-    },
-
-    // PURCHASE ----------------------------------------------------------------
-
-    initiateCheckout(site, plan) {
-
-        this.get('analytics').event('Initiate', 'Checkout', plan.get('identifier'));
-
-        this.get('facebook').initiateCheckout({
-            value: 12,
-            currency: 'USD',
-            content_name: plan.get('identifier'),
-        });
-
-        this.get('customerio').event('initiate_checkout', {
-            site: site,
-            plan_identifier: plan.get('identifier'),
-            plan_id: plan.get('id'),
-            url: window.location.href,
-        });
-
-    },
-
-    purchase(plan, period, method, href, url) {
-
-        var value = plan.get('price_' + period);
-
-        this.get('analytics').purchase({
-            name: plan.get('identifier'),
-            category: plan.get('category'),
-            variant: period,
-            revenue: value,
-            currency: plan.get('currency_code'),
-        });
-
-        this.get('facebook').purchase({
-            content_type: plan.get('category'),
-            content_name: plan.get('identifier'),
-            period: period,
-            value: value,
-            currency: plan.get('currency_code'),
-        });
-
-        this.get('customerio').event('purchase',{
-            plan_identifier: plan.get('identifier'),
-            method: method,
-            period: period,
-            value: value,
-            href: href,
-            url: url,
-            currency: plan.get('currency_code')
-        });
-
-    },
-
-    added(domain, plan, period) {
-
-        this.get('analytics').addProduct({
-            name: plan.get('identifier'),
-            variant: period,
-            domain: domain,
-        });
-
-        this.get('facebook').addToCart({
-            content_type: plan.get('category'),
-            content_name: plan.get('identifier'),
-            period: period,
-        });
-
-        this.get('customerio').event('add_to_cart',{
-            plan_identifier: plan.get('identifier'),
-            period: period,
-            domain: domain,
-            url: window.location.href,
-        });
-
-    },
-
-    view(domain, plan) {
-
-        this.get('analytics').addImpression({
-            name: plan.get('identifier'),
-            domain: domain,
-        });
-
-        this.get('facebook').viewContent({
-            content_type: plan.get('category'),
-            content_name: plan.get('identifier'),
-        });
-
-        this.get('customerio').event('view_content',{
-            plan_name: plan.get('identifier'),
-            domain: domain,
-            url: window.location.href,
-        });
 
     },
 
@@ -194,7 +96,7 @@ export default Ember.Service.extend({
         return this.router.currentRouteName.split('.').join('/');
     },
 
-    getTrackerName(page) {
+    getTrackerName() {
         return null;
     },
 

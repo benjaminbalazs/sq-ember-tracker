@@ -72,6 +72,15 @@ export default Ember.Service.extend({
         }
     },
 
+    addToWishlist(data) {
+        if ( !data ) { data = {}; }
+        data.content_type = 'product';
+        if ( this.get('hasSetup') === true ) {
+            window.fbq('track', 'AddToWishlist', data);
+            this.debugger('AddToWishlist', data);
+        }
+    },
+
     purchase(data) {
         if ( !data ) { data = {}; }
         if ( this.get('hasSetup') === true ) {
