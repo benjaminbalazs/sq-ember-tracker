@@ -122,6 +122,13 @@ export default Ember.Service.extend({
             }
         }
 
+        if ( config.GOOGLE_ANALYTICS.domains ) {
+            if ( this.exist() ) {
+                window.ga('require', 'linker');
+                window.ga('linker:autoLink', config.GOOGLE_ANALYTICS.domains);
+            }
+        }
+
     },
 
     exist() {
