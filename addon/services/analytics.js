@@ -4,6 +4,7 @@ import config from 'ember-get-config';
 export default Ember.Service.extend({
 
     fastboot: Ember.inject.service(),
+    user: Ember.inject.service(),
 
     //
 
