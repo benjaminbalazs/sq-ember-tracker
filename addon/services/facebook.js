@@ -1,9 +1,9 @@
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
 import config from 'ember-get-config';
 
-export default Ember.Service.extend({
+export default Service.extend({
 
-    fastboot: Ember.inject.service(),
+    fastboot: service(),
     hasSetup: false,
 
     //

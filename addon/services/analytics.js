@@ -1,10 +1,11 @@
-import Ember from 'ember';
+import { isArray } from '@ember/array';
+import Service, { inject as service } from '@ember/service';
 import config from 'ember-get-config';
 
-export default Ember.Service.extend({
+export default Service.extend({
 
-    fastboot: Ember.inject.service(),
-    user: Ember.inject.service(),
+    fastboot: service(),
+    user: service(),
 
     //
 
@@ -174,7 +175,7 @@ export default Ember.Service.extend({
         if ( this.exist() ) {
             if ( tracker ) {
                 var list = tracker;
-                if ( !Ember.isArray(tracker) ) {
+                if ( !isArray(tracker) ) {
                     list = [tracker];
                 }
                 for (var i = 0; i < list.length; i++) {

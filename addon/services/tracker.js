@@ -1,12 +1,12 @@
-import Ember from 'ember';
+import Service, { inject as service } from '@ember/service';
 import config from 'ember-get-config';
 
-export default Ember.Service.extend({
+export default Service.extend({
 
-    analytics: Ember.inject.service(),
-    facebook: Ember.inject.service(),
-    customerio: Ember.inject.service(),
-    fastboot: Ember.inject.service(),
+    analytics: service(),
+    facebook: service(),
+    customerio: service(),
+    fastboot: service(),
 
     // ROUTER LISTENER ---------------------------------------------------------
 
