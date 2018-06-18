@@ -10,7 +10,6 @@ module.exports = {
 
         app.import('vendor/analytics.js');
         app.import('vendor/facebook.js');
-        //app.import('vendor/twitter.js');
 
     },
 
